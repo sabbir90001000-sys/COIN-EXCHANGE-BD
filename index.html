@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -11,7 +12,7 @@
         :root { --blue: #0088cc; --green: #00c853; --red: #ff3d00; --gold: #ffd700; --bg: #f8fbff; --input-bg: #ffffff; }
         body { font-family: 'Poppins', 'Hind Siliguri', sans-serif; background: var(--bg); margin: 0; padding: 15px; overflow-x: hidden; }
         
-        /* Developer & User Profile */
+        /* Profile & Header */
         .dev-info-btn { color: var(--green); font-weight: bold; font-size: 14px; cursor: pointer; display: flex; align-items: center; gap: 8px; margin-bottom: 10px; padding: 8px 15px; background: #e8f5e9; border-radius: 25px; width: fit-content; border: 1px solid #c8e6c9; }
         .user-header { display: flex; align-items: center; gap: 15px; background: white; padding: 15px; border-radius: 20px; margin-bottom: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.03); }
         .user-header img { width: 50px; height: 50px; border-radius: 50%; border: 2px solid var(--blue); }
@@ -33,7 +34,7 @@
         .active-screen { display: block; animation: fadeIn 0.5s; }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
-        .btn { width: 100%; padding: 20px; border: none; border-radius: 20px; font-size: 17px; font-weight: 700; cursor: pointer; margin-top: 10px; transition: 0.3s; }
+        .btn { width: 100%; padding: 20px; border: none; border-radius: 20px; font-size: 17px; font-weight: 700; cursor: pointer; margin-top: 10px; }
         .btn-blue { background: var(--blue); color: white; }
         .btn-green { background: var(--green); color: white; }
         
@@ -87,7 +88,7 @@
         </div>
         
         <div class="balance-card">
-            <div><small>ব্যালেন্স</small><div class="bal-val">৳ 0.00</div></div>
+            <div><small>ব্যালেন্স</small><div class="bal-val" id="mainBal">৳ 0.00</div></div>
             <div style="text-align:right"><small>উইথড্র</small><div class="bal-val">৳ 0.00</div></div>
         </div>
 
@@ -128,8 +129,7 @@
     <div id="sellPreviewScreen" class="screen">
         <div class="card">
             <h3 style="text-align: center;">Confirm Details</h3>
-            <div id="sellSummary" style="line-height:2.2; font-size: 16px; background: #f9f9f9; padding: 20px; border-radius: 15px; margin-bottom: 15px;">
-                </div>
+            <div id="sellSummary" style="line-height:2.2; font-size: 16px; background: #f9f9f9; padding: 20px; border-radius: 15px; margin-bottom: 15px;"></div>
             <button class="btn btn-green" onclick="confirmSellAction()">Confirm Sell</button>
             <button class="btn" style="background:#eee;" onclick="showScreenWithSpace('sellScreen', 'EDITING INFO...')">Edit Info</button>
         </div>
@@ -137,19 +137,36 @@
 
     <div id="withdrawScreen" class="screen">
         <div class="card">
-            <div style="text-align:center; padding:15px; background:#e3f2fd; border-radius:15px; font-weight:800;">ব্যালেন্স: ৳ 0.00</div>
+            <div style="background: #e3f2fd; padding: 20px; border-radius: 15px; margin-bottom: 20px; text-align: center; font-weight: 800; border: 1px solid var(--blue);">আপনার ব্যালেন্স: <span id="wCheckBal" style="color:var(--blue);">৳ 0.00</span></div>
+            
             <label>উইথড্র মেথড</label>
-            <select id="wMethod"><option value="bkash">Bkash Personal</option></select>
-            <input type="number" id="wAmount" placeholder="টাকার পরিমান">
-            <input type="text" id="wNumber" placeholder="নাম্বার দিন">
-            <button class="btn btn-blue" onclick="alert('Insufficient Balance')">Confirm Withdraw</button>
-            <button class="btn" style="background:#eee;" onclick="showScreenWithSpace('homeScreen')">Back</button>
+            <select id="wMethod" onchange="updateWithdrawUI()">
+                <option value="bkash">Bkash Personal (Charge 3%)</option>
+                <option value="rocket">Rocket Personal (Charge 1.5%)</option>
+            </select>
+            
+            <p id="wLimitText" style="font-size:12px; color:var(--red); font-weight: bold; margin-left:10px;"></p>
+            
+            <label>পরিমান (৳)</label>
+            <input type="number" id="wAmount" placeholder="টাকার পরিমান" oninput="calcW()">
+            
+            <label>নাম্বার</label>
+            <input type="text" id="wNumber" placeholder="বিকাশ/রকেট নাম্বার">
+            
+            <div style="background:#e8f5e9; padding:20px; border-radius:20px; margin-top:10px; text-align: center;">
+                <small>আপনি পাবেন:</small><br>
+                <b id="wFinalAmt" style="font-size:28px; color:var(--green);">৳ 0.00</b>
+            </div>
+            
+            <button class="btn btn-blue" onclick="finalWithdraw()">Confirm Withdraw</button>
+            <button class="btn" style="background:#eee;" onclick="showScreenWithSpace('homeScreen', 'RETURNING HOME...')">Back</button>
         </div>
     </div>
 
     <script>
         let tg = window.Telegram.WebApp;
         tg.expand();
+        let userBalance = 0.00; // প্রাথমিক ব্যালেন্স
 
         window.onload = () => {
             if(tg.initDataUnsafe && tg.initDataUnsafe.user) {
@@ -159,6 +176,7 @@
                 if(user.photo_url) document.getElementById('userPic').src = user.photo_url;
             }
             renderMarket();
+            updateWithdrawUI();
             
             const muteTime = localStorage.getItem('subMute');
             if(!muteTime || Date.now() > muteTime) {
@@ -183,12 +201,12 @@
             }, 2000);
         }
 
+        /* --- SELL LOGIC --- */
         function updateSellUI() {
             const coin = document.getElementById('coinSelect');
             const target = document.getElementById('targetUser');
             const label = document.getElementById('dynamicLabel');
             const input = document.getElementById('sellUser');
-            
             const selectedText = coin.options[coin.selectedIndex].text;
 
             if(selectedText === "TOP COIN") {
@@ -212,7 +230,6 @@
             const coinName = coin.options[coin.selectedIndex].text;
             const rate = parseFloat(coin.value);
             const total = (qty / 1000) * rate;
-            
             const labelType = (coinName === "TOP COIN") ? "Voucher Code" : "Insta User";
 
             document.getElementById('sellSummary').innerHTML = `
@@ -223,7 +240,6 @@
                 <hr style="opacity:0.1">
                 <b style="color:var(--green); font-size:18px;">মোট পাবেন: ৳${total.toFixed(2)}</b>
             `;
-
             showScreenWithSpace('sellPreviewScreen', 'PREPARING PREVIEW...');
         }
 
@@ -234,7 +250,41 @@
             setTimeout(() => {
                 space.style.display = 'none';
                 alert("আপনার সেল রিকোয়েস্ট সফল হয়েছে! প্রতিনিধি চেক করে ব্যালেন্স যোগ করে দিবে।");
-                location.reload(); // ফিরে যাওয়ার জন্য রিলোড
+                location.reload();
+            }, 2000);
+        }
+
+        /* --- WITHDRAW LOGIC --- */
+        function updateWithdrawUI() {
+            const m = document.getElementById('wMethod').value;
+            document.getElementById('wLimitText').innerText = m == 'bkash' ? "Min: 50৳ | Charge: 3%" : "Min: 100৳ | Charge: 1.5%";
+            calcW();
+        }
+
+        function calcW() {
+            const amt = parseFloat(document.getElementById('wAmount').value) || 0;
+            const fee = document.getElementById('wMethod').value == 'bkash' ? 0.03 : 0.015;
+            const final = amt - (amt * fee);
+            document.getElementById('wFinalAmt').innerText = "৳ " + (final > 0 ? final.toFixed(2) : "0.00");
+        }
+
+        function finalWithdraw() {
+            const amt = parseFloat(document.getElementById('wAmount').value);
+            const m = document.getElementById('wMethod').value;
+            const num = document.getElementById('wNumber').value;
+            const min = m == 'bkash' ? 50 : 100;
+            
+            if(!amt || !num) return alert("সবগুলো ঘর পূরণ করুন!");
+            if(amt > userBalance) return alert("আপনার ব্যালেন্স পর্যাপ্ত নয়!");
+            if(amt < min) return alert("মিনিমাম উইথড্র লিমিট মানুন!");
+
+            const space = document.getElementById('spaceTransition');
+            space.innerHTML = '<i class="fas fa-paper-plane fa-4x" style="color:white"></i><h3 style="color:white; margin-top:20px;">টাকা ট্রান্সফার হচ্ছে...</h3>';
+            space.style.display = 'flex';
+            setTimeout(() => {
+                space.style.display = 'none';
+                alert("আপনার উইথড্র রিকোয়েস্ট সফল হয়েছে!");
+                showScreenWithSpace('homeScreen', 'DONE!');
             }, 2000);
         }
 
@@ -252,4 +302,3 @@
     </script>
 </body>
 </html>
-
