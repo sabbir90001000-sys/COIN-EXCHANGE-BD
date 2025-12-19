@@ -43,6 +43,9 @@
         
         .coin-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 15px; }
         .coin-box { background: white; padding: 20px; border-radius: 22px; text-align: center; border: 1px solid #eef2f6; }
+        
+        /* Admin Access Button Style */
+        .admin-access-btn { display:none; background: #fff3e0; border: 1px solid #ffe0b2; color: #e65100; font-weight: bold; font-size: 14px; cursor: pointer; padding: 8px 15px; border-radius: 25px; width: fit-content; margin-bottom: 10px; }
     </style>
 </head>
 <body>
@@ -75,8 +78,13 @@
     </div>
 
     <div id="homeScreen" class="screen active-screen">
-        <div class="dev-info-btn" onclick="document.getElementById('devModal').style.display='flex'">
-            <i class="fas fa-user-shield"></i> Developer info
+        <div style="display:flex; gap:10px;">
+            <div class="dev-info-btn" onclick="document.getElementById('devModal').style.display='flex'">
+                <i class="fas fa-user-shield"></i> Developer info
+            </div>
+            <div id="adminBtn" class="admin-access-btn" onclick="showScreenWithSpace('adminDashboard', 'ENTERING ADMIN...')">
+                <i class="fas fa-lock"></i> Admin Panel
+            </div>
         </div>
 
         <div class="user-header">
@@ -96,6 +104,18 @@
 
         <button class="btn btn-blue" onclick="showScreenWithSpace('sellScreen', 'GOING TO SELL PLANET...')">SELL COIN NOW</button>
         <button class="btn btn-blue" style="background:#fff; color:var(--blue); border:2px solid var(--blue);" onclick="showScreenWithSpace('withdrawScreen', 'GOING TO CASH PLANET...')">WITHDRAW NOW</button>
+    </div>
+
+    <div id="adminDashboard" class="screen">
+        <div class="card">
+            <h3 style="text-align:center;">Admin Control</h3>
+            <label>Target User ID</label>
+            <input type="text" id="adminTargetId" placeholder="User Telegram ID">
+            <label>New Balance Amount</label>
+            <input type="number" id="adminAmount" placeholder="Ex: 500">
+            <button class="btn btn-green" onclick="adminUpdateBal()">Update Balance</button>
+            <button class="btn" style="background:#eee;" onclick="showScreenWithSpace('homeScreen')">Back Home</button>
+        </div>
     </div>
 
     <div id="sellScreen" class="screen">
@@ -164,16 +184,24 @@
     </div>
 
     <script>
+        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycby7qgFQEYgj0DRLrn4pEQDW40jTtTWxoXOlQo3dPGkgmVFjIr2reo8l9_rRxAzxibclrw/exec"; 
+        const ADMIN_ID = "7699156028"; 
+
         let tg = window.Telegram.WebApp;
         tg.expand();
-        let userBalance = 0.00; // প্রাথমিক ব্যালেন্স
+        let userBalance = 0.00;
 
-        window.onload = () => {
+        window.onload = async () => {
             if(tg.initDataUnsafe && tg.initDataUnsafe.user) {
                 const user = tg.initDataUnsafe.user;
                 document.getElementById('userName').innerText = user.first_name + (user.last_name ? " " + user.last_name : "");
                 document.getElementById('userId').innerText = user.id;
                 if(user.photo_url) document.getElementById('userPic').src = user.photo_url;
+                
+                if(user.id.toString() === ADMIN_ID) {
+                    document.getElementById('adminBtn').style.display = 'block';
+                }
+                await syncData();
             }
             renderMarket();
             updateWithdrawUI();
@@ -183,6 +211,17 @@
                 document.getElementById('subModal').style.display = 'flex';
             }
         };
+
+        async function syncData() {
+            const user = tg.initDataUnsafe.user;
+            try {
+                let res = await fetch(`${SCRIPT_URL}?action=getUser&id=${user.id}&name=${user.first_name}`);
+                let data = await res.json();
+                userBalance = parseFloat(data.balance);
+                document.getElementById('mainBal').innerText = "৳ " + userBalance.toFixed(2);
+                document.getElementById('wCheckBal').innerText = "৳ " + userBalance.toFixed(2);
+            } catch(e) { console.error("Sync Error"); }
+        }
 
         function closeSub() { document.getElementById('subModal').style.display = 'none'; }
         function muteSub() { 
@@ -201,7 +240,48 @@
             }, 2000);
         }
 
-        /* --- SELL LOGIC --- */
+        async function confirmSellAction() {
+            const user = tg.initDataUnsafe.user;
+            const qty = document.getElementById('sellQty').value;
+            const info = document.getElementById('sellUser').value;
+            const coin = document.getElementById('coinSelect');
+            const coinName = coin.options[coin.selectedIndex].text;
+            const total = (qty / 1000) * parseFloat(coin.value);
+
+            showScreenWithSpace('homeScreen', 'SENDING REQUEST...');
+
+            try {
+                await fetch(SCRIPT_URL, {
+                    method: "POST",
+                    body: JSON.stringify({
+                        action: "sellCoin",
+                        id: user.id,
+                        coin: coinName,
+                        qty: qty,
+                        total: total.toFixed(2),
+                        info: info
+                    })
+                });
+                alert("আপনার সেল রিকোয়েস্ট সফল হয়েছে! এডমিন চেক করে ব্যালেন্স যোগ করে দিবে।");
+            } catch(e) { alert("Error sending request!"); }
+        }
+
+        async function adminUpdateBal() {
+            const id = document.getElementById('adminTargetId').value;
+            const amt = document.getElementById('adminAmount').value;
+            if(!id || !amt) return alert("Fill all fields");
+
+            showScreenWithSpace('homeScreen', 'UPDATING...');
+            try {
+                await fetch(SCRIPT_URL, {
+                    method: "POST",
+                    body: JSON.stringify({ action: "updateBal", id: id, amount: amt })
+                });
+                alert("ব্যালেন্স আপডেট সফল!");
+                syncData();
+            } catch(e) { alert("Error!"); }
+        }
+
         function updateSellUI() {
             const coin = document.getElementById('coinSelect');
             const target = document.getElementById('targetUser');
@@ -230,31 +310,18 @@
             const coinName = coin.options[coin.selectedIndex].text;
             const rate = parseFloat(coin.value);
             const total = (qty / 1000) * rate;
-            const labelType = (coinName === "TOP COIN") ? "Voucher Code" : "Insta User";
-
+            
             document.getElementById('sellSummary').innerHTML = `
                 <b>কয়েন টাইপ:</b> ${coinName}<br>
                 <b>পরিমান:</b> ${qty}<br>
                 <b>রেট:</b> ৳${rate} (প্রতি ১০০০)<br>
-                <b>${labelType}:</b> ${extraInfo}<br>
+                <b>Info:</b> ${extraInfo}<br>
                 <hr style="opacity:0.1">
                 <b style="color:var(--green); font-size:18px;">মোট পাবেন: ৳${total.toFixed(2)}</b>
             `;
             showScreenWithSpace('sellPreviewScreen', 'PREPARING PREVIEW...');
         }
 
-        function confirmSellAction() {
-            const space = document.getElementById('spaceTransition');
-            space.innerHTML = '<i class="fas fa-check-circle fa-4x" style="color:var(--green)"></i><h3 style="color:white; margin-top:20px;">অনুরোধ পাঠানো হচ্ছে...</h3>';
-            space.style.display = 'flex';
-            setTimeout(() => {
-                space.style.display = 'none';
-                alert("আপনার সেল রিকোয়েস্ট সফল হয়েছে! প্রতিনিধি চেক করে ব্যালেন্স যোগ করে দিবে।");
-                location.reload();
-            }, 2000);
-        }
-
-        /* --- WITHDRAW LOGIC --- */
         function updateWithdrawUI() {
             const m = document.getElementById('wMethod').value;
             document.getElementById('wLimitText').innerText = m == 'bkash' ? "Min: 50৳ | Charge: 3%" : "Min: 100৳ | Charge: 1.5%";
@@ -270,34 +337,20 @@
 
         function finalWithdraw() {
             const amt = parseFloat(document.getElementById('wAmount').value);
-            const m = document.getElementById('wMethod').value;
             const num = document.getElementById('wNumber').value;
-            const min = m == 'bkash' ? 50 : 100;
-            
             if(!amt || !num) return alert("সবগুলো ঘর পূরণ করুন!");
-            if(amt > userBalance) return alert("আপনার ব্যালেন্স পর্যাপ্ত নয়!");
-            if(amt < min) return alert("মিনিমাম উইথড্র লিমিট মানুন!");
-
-            const space = document.getElementById('spaceTransition');
-            space.innerHTML = '<i class="fas fa-paper-plane fa-4x" style="color:white"></i><h3 style="color:white; margin-top:20px;">টাকা ট্রান্সফার হচ্ছে...</h3>';
-            space.style.display = 'flex';
-            setTimeout(() => {
-                space.style.display = 'none';
-                alert("আপনার উইথড্র রিকোয়েস্ট সফল হয়েছে!");
-                showScreenWithSpace('homeScreen', 'DONE!');
-            }, 2000);
+            if(amt > userBalance) return alert("ব্যালেন্স পর্যাপ্ত নয়!");
+            alert("আপনার উইথড্র রিকোয়েস্ট পাঠানো হয়েছে!");
+            showScreenWithSpace('homeScreen');
         }
 
         function renderMarket() {
-            const coins = [
-                {n: 'NIVA COIN', p: '5.60', s: 'Active'}, {n: 'TOP COIN', p: '5.60', s: 'Active'},
-                {n: 'NS COIN', p: '14.00', s: 'Active'}, {n: 'FIRA COIN', p: 'OFF', s: 'Closed'}
-            ];
-            let h = '';
+            const coins = [{n: 'NIVA COIN', p: '5.60'}, {n: 'TOP COIN', p: '5.60'}, {n: 'NS COIN', p: '14.00'}];
+            let html = '';
             coins.forEach(c => {
-                h += `<div class="coin-box"><b>${c.n}</b><div class="coin-price">${c.p}৳</div><small style="color:${c.s=='Active'?'green':'red'}; font-weight:bold;">${c.s}</small></div>`;
+                html += `<div class="coin-box"><b>${c.n}</b><div style="color:var(--blue); font-weight:800;">${c.p}৳</div></div>`;
             });
-            document.getElementById('marketGrid').innerHTML = h;
+            document.getElementById('marketGrid').innerHTML = html;
         }
     </script>
 </body>
