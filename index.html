@@ -4,251 +4,258 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>COIN SELL BD - Pro</title>
+    <title>COIN SELL BD - Premium</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        :root { --blue: #007bff; --green: #28a745; --red: #dc3545; --gray: #f4f7f9; }
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: var(--gray); margin: 0; padding: 15px; }
-        .screen { display: none; }
-        .active-screen { display: block; animation: fadeIn 0.3s; }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        :root { --blue: #0088cc; --green: #00c853; --red: #ff3d00; --gold: #ffd700; --bg: #f0f4f7; }
+        body { font-family: 'Poppins', sans-serif; background: var(--bg); margin: 0; padding: 15px; overflow-x: hidden; }
         
-        /* White Board & Profile */
-        .card { background: white; padding: 15px; border-radius: 18px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); margin-bottom: 15px; }
-        .dev-info-btn { color: var(--green); font-weight: bold; font-size: 13px; cursor: pointer; margin-bottom: 8px; display: inline-flex; align-items: center; gap: 5px; }
-        .profile { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; }
-        .profile img { width: 55px; height: 55px; border-radius: 50%; border: 2px solid var(--blue); }
-        .bal-row { display: flex; justify-content: space-between; border-top: 1px solid #eee; padding-top: 12px; }
-        .bal-val { font-size: 18px; font-weight: bold; color: var(--blue); }
-
-        /* Buttons & Grids */
-        .btn { width: 100%; padding: 14px; border: none; border-radius: 12px; font-size: 16px; font-weight: bold; cursor: pointer; transition: 0.2s; margin-bottom: 10px; }
-        .btn-blue { background: var(--blue); color: white; }
-        .btn-green { background: var(--green); color: white; }
-        .btn-outline { background: transparent; border: 2px solid var(--blue); color: var(--blue); }
-        .coin-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 15px; }
-        .coin-box { background: white; padding: 12px; border-radius: 12px; border: 1px solid #eee; position: relative; }
-        .badge { position: absolute; top: 8px; right: 8px; font-size: 9px; padding: 3px 6px; border-radius: 5px; color: white; }
+        /* Premium Cards */
+        .card { background: white; padding: 20px; border-radius: 20px; box-shadow: 0 8px 25px rgba(0,0,0,0.06); margin-bottom: 15px; }
+        .dev-info-btn { color: var(--green); font-weight: bold; font-size: 14px; cursor: pointer; display: flex; align-items: center; gap: 8px; margin-bottom: 10px; padding: 5px 10px; background: #e8f5e9; border-radius: 20px; width: fit-content; }
+        
+        /* Balance Section */
+        .balance-card { background: linear-gradient(135deg, var(--blue), #0055ff); color: white; padding: 20px; border-radius: 20px; display: flex; justify-content: space-between; align-items: center; }
+        .bal-val { font-size: 24px; font-weight: 800; }
+        
+        /* Screens & Transitions */
+        .screen { display: none; }
+        .active-screen { display: block; }
+        
+        /* Planet/Space Animation */
+        .space-modal { display: none; position: fixed; top:0; left:0; width:100%; height:100%; background: #0b0e14; z-index: 2000; align-items: center; justify-content: center; flex-direction: column; color: white; }
+        .planet { width: 80px; height: 80px; background: radial-gradient(circle at 30% 30%, #4facfe, #00f2fe); border-radius: 50%; box-shadow: 0 0 40px #4facfe; animation: travel 2s ease-in-out infinite; }
+        @keyframes travel { 0% { transform: scale(0.5) translateX(-100px); opacity:0; } 50% { transform: scale(1.2) translateX(0); opacity:1; } 100% { transform: scale(0.5) translateX(100px); opacity:0; } }
 
         /* Popups */
-        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 1000; align-items: center; justify-content: center; }
-        .modal-content { background: white; width: 85%; padding: 25px; border-radius: 20px; text-align: center; position: relative; }
-        .close-popup { margin-top: 15px; color: #888; cursor: pointer; font-size: 13px; text-decoration: underline; }
-
-        /* Forms */
-        input, select { width: 100%; padding: 12px; margin: 10px 0; border: 1px solid #ddd; border-radius: 10px; }
-        .summary-line { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #f0f0f0; }
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 1000; align-items: center; justify-content: center; }
+        .modal-content { background: white; width: 85%; padding: 25px; border-radius: 25px; text-align: center; border-top: 5px solid var(--blue); }
+        
+        /* Inputs & Buttons */
+        .btn { width: 100%; padding: 16px; border: none; border-radius: 15px; font-size: 16px; font-weight: 700; cursor: pointer; margin-top: 10px; transition: 0.3s; }
+        .btn-blue { background: var(--blue); color: white; box-shadow: 0 4px 15px rgba(0,136,204,0.3); }
+        .btn-green { background: var(--green); color: white; }
+        .copy-btn { background: #eee; padding: 5px 12px; border-radius: 8px; font-size: 12px; cursor: pointer; color: var(--blue); border: 1px solid #ddd; }
+        
+        /* Coin Grid */
+        .coin-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 15px; }
+        .coin-box { background: white; padding: 15px; border-radius: 15px; text-align: center; border: 1px solid #e0e6ed; }
+        .coin-price { font-size: 18px; font-weight: bold; color: #2c3e50; }
+        
+        /* Withdraw Specific */
+        .withdraw-header { background: #e3f2fd; border-left: 5px solid var(--blue); padding: 10px; margin-bottom: 15px; border-radius: 5px; }
     </style>
 </head>
 <body>
 
-    <div id="joinModal" class="modal">
-        <div class="modal-content">
-            <i class="fab fa-telegram-plane" style="font-size: 40px; color: var(--blue);"></i>
-            <h3>আমাদের টেলিগ্রাম চ্যানেলে জয়েন হোন!</h3>
-            <p>ফ্রি গিফটসহ কয়েনের মূল্য সম্পর্কে লাইভ তথ্য পেতে জয়েন করুন।</p>
-            <a href="https://t.me/earning_hub_bdt" class="btn btn-green" style="text-decoration: none; display: block;">জয়েন করুন</a>
-            <div class="close-popup" onclick="closeJoinPopup()">১ ঘণ্টার জন্য বন্ধ করুন</div>
-        </div>
+    <div id="spaceTransition" class="space-modal">
+        <div class="planet"></div>
+        <p style="margin-top:20px; letter-spacing: 2px;">TRAVELING TO NEXT PLANET...</p>
     </div>
 
     <div id="devModal" class="modal">
         <div class="modal-content">
-            <h3>আসসালামু আলাইকুম!</h3>
-            <p>আমাদের সার্ভিস ব্যবহার করার জন্য আপনাকে ধন্যবাদ। আমরা বিশ্বস্ততার সাথে কয়েন এক্সচেঞ্জ সেবা প্রদান করি।</p>
+            <div style="background: var(--green); color:white; width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 15px;"><i class="fas fa-code fa-2x"></i></div>
+            <h3 style="margin:0;">SABBIR RAHMAN</h3>
+            <p style="color:#888; font-size:12px; margin-top:5px;"><i class="fas fa-map-marker-alt"></i> Cumilla, Bangladesh</p>
+            <p style="font-style: italic; font-size:13px; color:#444;">"আমরা বিশ্বাস করি সততা ও দ্রুত সেবায়। আপনার প্রতিটি ট্রানজ্যাকশন আমাদের কাছে আমানত। ডিজিটাল কারেন্সি এক্সচেঞ্জে আমরাই দিচ্ছি সেরা রেট ও নিরাপত্তা।"</p>
             <hr>
-            <p><i class="fab fa-telegram"></i> t.me/developereh</p>
-            <p><i class="fas fa-envelope"></i> botdevelopereh@gmail.com</p>
-            <button class="btn btn-blue" onclick="document.getElementById('devModal').style.display='none'">বন্ধ করুন</button>
+            <p style="font-size:14px;"><i class="fab fa-telegram" style="color:#0088cc"></i> <b>t.me/developereh</b></p>
+            <p style="font-size:14px;"><i class="fas fa-envelope" style="color:#ea4335"></i> <b>botdevelopereh@gmail.com</b></p>
+            <button class="btn btn-blue" onclick="closeDevPopup()">বন্ধ করুন</button>
+            <div style="font-size: 11px; margin-top:10px; color:#aaa; cursor:pointer;" onclick="muteDevPopup()">১ ঘণ্টার জন্য বন্ধ করুন</div>
         </div>
     </div>
 
     <div id="homeScreen" class="screen active-screen">
-        <div class="dev-info-btn" onclick="document.getElementById('devModal').style.display='flex'">
-            <i class="fas fa-tools"></i> Developer info
-        </div>
-        <div class="card">
-            <div class="profile">
-                <img id="uImg" src="https://via.placeholder.com/55">
-                <div><b id="uName">Loading...</b><br><small id="uId">ID: 000000</small></div>
-            </div>
-            <div class="bal-row">
-                <div><small>উইথড্র</small><div class="bal-val">৳ 0.00</div></div>
-                <div style="text-align: right;"><small>ব্যালেন্স</small><div class="bal-val" id="userBalance">৳ 0.00</div></div>
-            </div>
+        <div class="dev-info-btn" onclick="openDevModal()">
+            <i class="fas fa-user-shield"></i> Developer info
         </div>
         
-        <div class="coin-grid" id="marketGrid">
-            </div>
+        <div class="balance-card">
+            <div><small style="opacity:0.8">ব্যালেন্স</small><div class="bal-val" id="mainBal">৳ 500.00</div></div>
+            <div style="text-align:right"><small style="opacity:0.8">উইথড্র</small><div class="bal-val">৳ 0.00</div></div>
+        </div>
 
-        <button class="btn btn-blue" onclick="showScreen('sellScreen')">SELL COIN NOW</button>
-        <button class="btn btn-outline" onclick="showScreen('withdrawScreen')">WITHDRAW NOW</button>
-        <button class="btn btn-outline" style="border-color:#ccc; color:#666;" onclick="showHistory()">History (Last 10)</button>
+        <a href="https://t.me/earning_hub_bdt" class="btn btn-green" style="display:block; text-decoration:none; text-align:center; margin-top:15px;"><i class="fab fa-telegram"></i> Join Telegram Channel</a>
+
+        <div class="coin-grid" id="marketGrid"></div>
+
+        <button class="btn btn-blue" onclick="showScreenWithSpace('sellScreen')">SELL COIN NOW</button>
+        <button class="btn btn-blue" style="background:#fff; color:var(--blue); border:2px solid var(--blue);" onclick="showScreenWithSpace('withdrawScreen')">WITHDRAW NOW</button>
+        <button class="btn" style="background:#eee; color:#666;" onclick="alert('History coming soon!')">Transaction History</button>
     </div>
 
     <div id="sellScreen" class="screen">
         <div class="card">
             <h3>Sell Coins</h3>
+            <label>Select Coin</label>
             <select id="coinSelect" onchange="updateSellUI()">
                 <option value="5.60" data-name="NIVA COIN">NIVA COIN</option>
                 <option value="5.60" data-name="TOP COIN">TOP COIN</option>
                 <option value="14.00" data-name="NS COIN">NS COIN</option>
             </select>
-            <p id="sellNote" style="font-size: 12px; color: var(--blue);"></p>
+            
+            <div id="transferInfo" style="background:#f8f9fa; padding:15px; border-radius:12px; margin:10px 0; border:1px dashed var(--blue);">
+                <small id="transferTitle">Send Coin to:</small><br>
+                <b id="targetUser" style="font-size:20px; color:var(--blue);">niva_coin_eh</b> 
+                <span class="copy-btn" onclick="copyUser()">COPY</span>
+            </div>
+
             <input type="number" id="sellQty" placeholder="কত কয়েন সেল করবেন? (Min 10,000)">
-            <input type="text" id="sellUser" placeholder="ইউজারনেম বা ভাউচার দিন">
+            <input type="text" id="sellUser" placeholder="আপনার ইউজারনেম দিন">
+            
             <button class="btn btn-blue" onclick="showSellPreview()">পরবর্তী ধাপে যান</button>
-            <button class="btn btn-outline" onclick="showScreen('homeScreen')">Back</button>
+            <button class="btn" onclick="showScreenWithSpace('homeScreen')">Back</button>
         </div>
     </div>
 
     <div id="sellPreviewScreen" class="screen">
         <div class="card">
             <h3>Confirm Details</h3>
-            <div id="sellSummary"></div>
-            <button class="btn btn-green" style="margin-top:15px;" onclick="confirmSell()">Confirm Sell</button>
-            <button class="btn btn-outline" onclick="showScreen('sellScreen')">Edit Info</button>
+            <div id="sellSummary" style="line-height:2;"></div>
+            <button class="btn btn-green" onclick="confirmSellAction()">Confirm Sell</button>
+            <button class="btn" onclick="showScreenWithSpace('sellScreen')">Edit Info</button>
         </div>
     </div>
 
     <div id="withdrawScreen" class="screen">
-        <div class="card" style="background: var(--blue); color: white;">
-            <small>আপনার মোট ব্যালেন্স</small>
-            <h2 id="wTotalBal">৳ 0.00</h2>
-        </div>
         <div class="card">
-            <label>Method</label>
+            <div class="withdraw-header">আপনার ব্যালেন্স: <b id="wCheckBal">৳ 500.00</b></div>
+            <label>উইথড্র মেথড</label>
             <select id="wMethod" onchange="updateWithdrawUI()">
-                <option value="bkash">Bkash Personal (Fee 3%)</option>
-                <option value="rocket">Rocket Personal (Fee 1.5%)</option>
-                <option value="nagad" disabled>Nagad (Off - Fee 2%)</option>
-                <option value="binance" disabled>Binance (Off - Fee 3%)</option>
+                <option value="bkash">Bkash Personal (Charge 3%)</option>
+                <option value="rocket">Rocket Personal (Charge 1.5%)</option>
+                <option value="nagad" disabled>Nagad (OFF)</option>
+                <option value="binance" disabled>Binance (OFF)</option>
             </select>
-            <p id="wLimits" style="font-size: 12px;"></p>
-            <input type="number" id="wAmount" placeholder="টাকার পরিমান" oninput="calcWithdraw()">
+            <p id="wLimitText" style="font-size:12px; color:var(--red);"></p>
+            <input type="number" id="wAmount" placeholder="টাকার পরিমান" oninput="calcW()">
             <input type="text" id="wNumber" placeholder="বিকাশ/রকেট নাম্বার">
-            <div class="card" style="background:#f9f9f9;">
-                <small>You Receive:</small>
-                <h3 id="wFinal">৳ 0.00</h3>
+            <div style="background:#e8f5e9; padding:15px; border-radius:10px; margin-top:10px;">
+                <small>আপনি পাবেন:</small><br>
+                <b id="wFinalAmt" style="font-size:22px; color:var(--green);">৳ 0.00</b>
             </div>
-            <button class="btn btn-blue" onclick="processWithdraw()">Confirm Withdraw</button>
-            <button class="btn btn-outline" onclick="showScreen('homeScreen')">Back</button>
-        </div>
-    </div>
-
-    <div id="moneyAnim" class="modal">
-        <div class="modal-content">
-            <i class="fas fa-money-bill-wave" style="font-size: 50px; color: var(--green); animation: bounce 1s infinite;"></i>
-            <h3>টাকা ট্রান্সফার হচ্ছে...</h3>
+            <button class="btn btn-blue" onclick="finalWithdraw()">Confirm Withdraw</button>
+            <button class="btn" onclick="showScreenWithSpace('homeScreen')">Back</button>
         </div>
     </div>
 
     <script>
         let tg = window.Telegram.WebApp;
         tg.expand();
+        let userBalance = 500.00; // স্ট্যাটিক ব্যালেন্স
 
-        // 1 Hour Popup Logic
+        // Logic for Dev Info & Mute
         window.onload = () => {
-            const lastClose = localStorage.getItem('popupCloseTime');
-            if (!lastClose || Date.now() - lastClose > 3600000) {
-                document.getElementById('joinModal').style.display = 'flex';
-            }
-            updateSellUI();
-            updateWithdrawUI();
             renderMarket();
+            setTimeout(() => {
+                const isMuted = localStorage.getItem('devMuteTime');
+                if(!isMuted || Date.now() - isMuted > 3600000) {
+                    openDevModal();
+                }
+            }, 3000); 
         };
 
-        function closeJoinPopup() {
-            localStorage.setItem('popupCloseTime', Date.now());
-            document.getElementById('joinModal').style.display = 'none';
+        function openDevModal() { document.getElementById('devModal').style.display = 'flex'; }
+        function closeDevPopup() { document.getElementById('devModal').style.display = 'none'; }
+        function muteDevPopup() { localStorage.setItem('devMuteTime', Date.now()); closeDevPopup(); }
+
+        // Space Transition Animation
+        function showScreenWithSpace(screenId) {
+            const space = document.getElementById('spaceTransition');
+            space.style.display = 'flex';
+            setTimeout(() => {
+                space.style.display = 'none';
+                document.querySelectorAll('.screen').forEach(s => s.classList.remove('active-screen'));
+                document.getElementById(screenId).classList.add('active-screen');
+            }, 2000);
         }
 
-        function showScreen(id) {
-            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active-screen'));
-            document.getElementById(id).classList.add('active-screen');
+        // Copy Username
+        function copyUser() {
+            const user = document.getElementById('targetUser').innerText;
+            navigator.clipboard.writeText(user);
+            alert("Username Copied!");
         }
 
         function updateSellUI() {
-            const sel = document.getElementById('coinSelect');
-            const name = sel.options[sel.selectedIndex].dataset.name;
-            const note = document.getElementById('sellNote');
-            if(name === "NIVA COIN") note.innerText = "Send to: niva_coin_eh";
-            else if(name === "NS COIN") note.innerText = "Send to: ns_coin_eh";
-            else if(name === "TOP COIN") note.innerText = "ইউজাররা একটি ভাউচার কোড দিবে।";
+            const coin = document.getElementById('coinSelect');
+            const target = document.getElementById('targetUser');
+            if(coin.value == "14.00") target.innerText = "ns_coin_eh";
+            else if(coin.options[coin.selectedIndex].text == "TOP COIN") target.innerText = "VOUCHER_MODE";
+            else target.innerText = "niva_coin_eh";
         }
 
         function showSellPreview() {
             const qty = document.getElementById('sellQty').value;
-            const user = document.getElementById('sellUser').value;
+            if(qty < 10000) return alert("মিনিমাম ১০,০০০ কয়েন লাগবে!");
             const rate = document.getElementById('coinSelect').value;
-            const name = document.getElementById('coinSelect').options[document.getElementById('coinSelect').selectedIndex].dataset.name;
-
-            if(qty < 10000 || !user) return alert("সঠিক তথ্য দিন!");
-
             const total = (qty / 1000) * rate;
             document.getElementById('sellSummary').innerHTML = `
-                <div class="summary-line"><span>কয়েন:</span><b>${name}</b></div>
-                <div class="summary-line"><span>পরিমান:</span><b>${qty}</b></div>
-                <div class="summary-line"><span>১০০০ এর মূল্য:</span><b>৳${rate}</b></div>
-                <div class="summary-line"><span>মোট মূল্য:</span><b style="color:var(--green);">৳${total.toFixed(2)}</b></div>
-                <div class="summary-line"><span>টেলিগ্রাম ইউজার:</span><b>${user}</b></div>
+                <b>কয়েন:</b> ${document.getElementById('coinSelect').options[document.getElementById('coinSelect').selectedIndex].text}<br>
+                <b>পরিমান:</b> ${qty}<br>
+                <b>রেট:</b> ৳${rate} (প্রতি ১০০০)<br>
+                <b style="color:var(--green)">মোট মূল্য: ৳${total.toFixed(2)}</b><br>
+                <b>ইউজারনেম:</b> ${document.getElementById('sellUser').value}
             `;
-            showScreen('sellPreviewScreen');
+            showScreenWithSpace('sellPreviewScreen');
         }
 
-        function confirmSell() {
-            alert("আমরা আপনার রিকোয়েস্ট পেয়েছি একটু অপেক্ষা করুন।");
-            showScreen('homeScreen');
+        function confirmSellAction() {
+            const space = document.getElementById('spaceTransition');
+            space.innerHTML = '<i class="fas fa-hand-holding-usd fa-4x" style="color:var(--gold)"></i><h3 style="color:white; margin-top:20px;">কয়েন দিয়ে টাকা নিচ্ছি...</h3>';
+            space.style.display = 'flex';
+            setTimeout(() => {
+                space.style.display = 'none';
+                alert("আমরা আপনার রিকোয়েস্ট পেয়েছি একটু অপেক্ষা করুন।");
+                showScreenWithSpace('homeScreen');
+            }, 3000);
         }
 
         function updateWithdrawUI() {
-            const method = document.getElementById('wMethod').value;
-            const info = document.getElementById('wLimits');
-            if(method === 'bkash') info.innerText = "Min: 50৳ | Charge: 3%";
-            else info.innerText = "Min: 100৳ | Charge: 1.5%";
-            calcWithdraw();
+            const m = document.getElementById('wMethod').value;
+            document.getElementById('wLimitText').innerText = m == 'bkash' ? "Min: 50৳ | Charge: 3%" : "Min: 100৳ | Charge: 1.5%";
+            calcW();
         }
 
-        function calcWithdraw() {
+        function calcW() {
             const amt = document.getElementById('wAmount').value;
-            const method = document.getElementById('wMethod').value;
-            const fee = method === 'bkash' ? 0.03 : 0.015;
+            const fee = document.getElementById('wMethod').value == 'bkash' ? 0.03 : 0.015;
             const final = amt - (amt * fee);
-            document.getElementById('wFinal').innerText = "৳ " + (final > 0 ? final.toFixed(2) : "0.00");
+            document.getElementById('wFinalAmt').innerText = "৳ " + (final > 0 ? final.toFixed(2) : "0.00");
         }
 
-        function processWithdraw() {
-            document.getElementById('moneyAnim').style.display = 'flex';
+        function finalWithdraw() {
+            const amt = parseFloat(document.getElementById('wAmount').value);
+            const m = document.getElementById('wMethod').value;
+            const min = m == 'bkash' ? 50 : 100;
+            
+            if(amt > userBalance) return alert("পর্যাপ্ত ব্যালেন্স নেই!");
+            if(amt < min) return alert("মিনিমাম উইথড্র লিমিট মানুন!");
+
+            const space = document.getElementById('spaceTransition');
+            space.innerHTML = '<i class="fas fa-paper-plane fa-4x" style="color:white"></i><h3 style="color:white; margin-top:20px;">টাকা ট্রান্সফার হচ্ছে...</h3>';
+            space.style.display = 'flex';
             setTimeout(() => {
-                document.getElementById('moneyAnim').style.display = 'none';
+                space.style.display = 'none';
                 alert("উইথড্র রিকোয়েস্ট সফল হয়েছে!");
-                showScreen('homeScreen');
+                showScreenWithSpace('homeScreen');
             }, 3000);
         }
 
         function renderMarket() {
             const coins = [
-                {name: 'NIVA COIN', price: '5.60', status: 'Active', color: 'var(--green)'},
-                {name: 'TOP COIN', price: '5.60', status: 'Active', color: 'var(--green)'},
-                {name: 'NS COIN', price: '14.00', status: 'Active', color: 'var(--green)'},
-                {name: 'FIRA COIN', price: 'OFF', status: 'Closed', color: 'var(--red)'}
+                {n: 'NIVA COIN', p: '5.60', s: 'Active'}, {n: 'TOP COIN', p: '5.60', s: 'Active'},
+                {n: 'NS COIN', p: '14.00', s: 'Active'}, {n: 'FIRA COIN', p: 'OFF', s: 'Closed'}
             ];
-            let html = '';
+            let h = '';
             coins.forEach(c => {
-                html += `<div class="coin-box">
-                    <small>${c.name}</small>
-                    <span class="coin-price">${c.price}৳</span>
-                    <span class="badge" style="background:${c.color}">${c.status}</span>
-                </div>`;
+                h += `<div class="coin-box"><b>${c.n}</b><div class="coin-price">${c.p}৳</div><small style="color:${c.s=='Active'?'green':'red'}">${c.s}</small></div>`;
             });
-            document.getElementById('marketGrid').innerHTML = html;
+            document.getElementById('marketGrid').innerHTML = h;
         }
-
-        // Setup User Info
-        document.getElementById('uName').innerText = tg.initDataUnsafe.user?.first_name || "Earning Hub User";
-        document.getElementById('uId').innerText = "ID: " + (tg.initDataUnsafe.user?.id || "7699156028");
-        if(tg.initDataUnsafe.user?.photo_url) document.getElementById('uImg').src = tg.initDataUnsafe.user.photo_url;
     </script>
 </body>
 </html>
