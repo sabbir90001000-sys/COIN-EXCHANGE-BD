@@ -11,255 +11,173 @@
         :root { --blue: #0088cc; --green: #00c853; --red: #ff3d00; --gold: #ffd700; --bg: #f8fbff; --input-bg: #ffffff; }
         body { font-family: 'Poppins', 'Hind Siliguri', sans-serif; background: var(--bg); margin: 0; padding: 15px; overflow-x: hidden; }
         
-        /* Premium Cards */
+        /* User Profile Section */
+        .user-header { display: flex; align-items: center; gap: 15px; background: white; padding: 15px; border-radius: 20px; margin-bottom: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.03); }
+        .user-header img { width: 50px; height: 50px; border-radius: 50%; border: 2px solid var(--blue); }
+        .user-info h4 { margin: 0; font-size: 16px; color: #333; }
+        .user-info p { margin: 0; font-size: 12px; color: #888; }
+
         .card { background: white; padding: 25px; border-radius: 25px; box-shadow: 0 10px 30px rgba(0,0,0,0.04); margin-bottom: 15px; }
-        .dev-info-btn { color: var(--green); font-weight: bold; font-size: 14px; cursor: pointer; display: flex; align-items: center; gap: 8px; margin-bottom: 10px; padding: 8px 15px; background: #e8f5e9; border-radius: 25px; width: fit-content; border: 1px solid #c8e6c9; }
-        
-        /* Balance Section */
-        .balance-card { background: linear-gradient(135deg, #0088cc, #0055ff); color: white; padding: 25px; border-radius: 25px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 8px 20px rgba(0,136,204,0.3); }
+        .balance-card { background: linear-gradient(135deg, #0088cc, #0055ff); color: white; padding: 25px; border-radius: 25px; display: flex; justify-content: space-between; align-items: center; }
         .bal-val { font-size: 26px; font-weight: 800; }
         
-        /* BIGGER & BETTER INPUTS (আপনার চাহিদা অনুযায়ী) */
-        input, select { 
-            width: 100%; 
-            padding: 20px; /* সাইজ বড় করা হয়েছে */
-            margin: 12px 0; 
-            border: 2px solid #e0e6ed; 
-            border-radius: 20px; 
-            font-size: 17px; 
-            background: var(--input-bg); 
-            box-sizing: border-box; 
-            transition: 0.3s;
-            color: #2c3e50;
-            font-weight: 600;
-        }
-        input:focus, select:focus { border-color: var(--blue); outline: none; box-shadow: 0 0 15px rgba(0,136,204,0.1); background: #fff; }
+        input, select { width: 100%; padding: 20px; margin: 12px 0; border: 2px solid #e0e6ed; border-radius: 20px; font-size: 17px; font-weight: 600; box-sizing: border-box; }
         label { font-weight: 700; font-size: 15px; color: #444; margin-left: 10px; display: block; }
 
-        /* Space Modal (2 Seconds Timing) */
         .space-modal { display: none; position: fixed; top:0; left:0; width:100%; height:100%; background: #0b0e14; z-index: 2000; align-items: center; justify-content: center; flex-direction: column; color: white; text-align: center; }
-        .planet { width: 90px; height: 90px; background: radial-gradient(circle at 30% 30%, #4facfe, #00f2fe); border-radius: 50%; box-shadow: 0 0 50px #4facfe; animation: travel 2s ease-in-out infinite; }
+        .planet { width: 90px; height: 90px; background: radial-gradient(circle at 30% 30%, #4facfe, #00f2fe); border-radius: 50%; animation: travel 2s ease-in-out infinite; }
         @keyframes travel { 0% { transform: scale(0.5) translateX(-120px); opacity:0; } 50% { transform: scale(1.3) translateX(0); opacity:1; } 100% { transform: scale(0.5) translateX(120px); opacity:0; } }
 
-        /* Screens & Transitions */
         .screen { display: none; }
         .active-screen { display: block; animation: fadeIn 0.5s; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
-        /* Buttons */
-        .btn { width: 100%; padding: 20px; border: none; border-radius: 20px; font-size: 17px; font-weight: 700; cursor: pointer; margin-top: 10px; transition: 0.3s; }
-        .btn-blue { background: var(--blue); color: white; box-shadow: 0 6px 20px rgba(0,136,204,0.3); }
+        .btn { width: 100%; padding: 20px; border: none; border-radius: 20px; font-size: 17px; font-weight: 700; cursor: pointer; margin-top: 10px; }
+        .btn-blue { background: var(--blue); color: white; }
         .btn-green { background: var(--green); color: white; }
-        .copy-btn { background: #e3f2fd; padding: 10px 18px; border-radius: 12px; font-size: 13px; cursor: pointer; color: var(--blue); border: 2px solid var(--blue); font-weight: bold; }
         
-        /* Coin Grid */
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 3000; align-items: center; justify-content: center; }
+        .modal-content { background: white; width: 85%; padding: 30px; border-radius: 30px; text-align: center; }
+        
         .coin-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 15px; }
-        .coin-box { background: white; padding: 20px; border-radius: 22px; text-align: center; border: 1px solid #eef2f6; box-shadow: 0 4px 10px rgba(0,0,0,0.02); }
-        .coin-price { font-size: 20px; font-weight: 800; color: #2c3e50; margin: 5px 0; }
-        
-        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 1000; align-items: center; justify-content: center; }
-        .modal-content { background: white; width: 85%; padding: 30px; border-radius: 30px; text-align: center; border-top: 6px solid var(--blue); }
+        .coin-box { background: white; padding: 20px; border-radius: 22px; text-align: center; border: 1px solid #eef2f6; }
     </style>
 </head>
 <body>
 
-    <div id="spaceTransition" class="space-modal">
-        <div id="animIcon" class="planet"></div>
-        <p id="animText" style="margin-top:25px; letter-spacing: 2px; font-weight: 600;">TRAVELING...</p>
+    <div id="subModal" class="modal">
+        <div class="modal-content">
+            <i class="fab fa-telegram fa-4x" style="color: var(--blue); margin-bottom: 15px;"></i>
+            <h2 style="margin: 0;">চ্যানেল সাবস্ক্রাইব করুন</h2>
+            <p style="color: #666; font-size: 14px; margin: 15px 0;">আমাদের টেলিগ্রাম চ্যানেলে জয়েন না থাকলে পেমেন্ট পাবেন না। দ্রুত জয়েন করুন।</p>
+            <a href="https://t.me/earning_hub_bdt" class="btn btn-blue" style="display:block; text-decoration:none;">JOIN NOW</a>
+            <button class="btn" style="background:#eee; margin-top:10px;" onclick="closeSub()">বন্ধ করুন</button>
+            <p style="font-size:12px; color:var(--red); cursor:pointer; text-decoration:underline; margin-top:10px;" onclick="muteSub()">১৫ মিনিটের জন্য বন্ধ করুন</p>
+        </div>
     </div>
 
-    <div id="devModal" class="modal">
-        <div class="modal-content">
-            <div style="background: var(--green); color:white; width: 70px; height: 70px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 15px;"><i class="fas fa-code fa-2x"></i></div>
-            <h3 style="margin:0; font-size: 22px;">SABBIR RAHMAN</h3>
-            <p style="color:#888; font-size:13px; margin-top:5px;"><i class="fas fa-map-marker-alt"></i> Cumilla, Bangladesh</p>
-            <p style="font-style: italic; font-size:14px; color:#444; margin: 15px 0;">"আমরা বিশ্বাস করি সততা ও দ্রুত সেবায়। আপনার প্রতিটি ট্রানজ্যাকশন আমাদের কাছে আমানত। ডিজিটাল কারেন্সি এক্সচেঞ্জে আমরাই দিচ্ছি সেরা রেট ও নিরাপত্তা।"</p>
-            <hr style="opacity: 0.1;">
-            <p style="font-size:15px; margin: 10px 0;"><i class="fab fa-telegram" style="color:#0088cc"></i> <b>t.me/developereh</b></p>
-            <p style="font-size:15px; margin: 10px 0;"><i class="fas fa-envelope" style="color:#ea4335"></i> <b>botdevelopereh@gmail.com</b></p>
-            <button class="btn btn-blue" onclick="closeDevPopup()">বন্ধ করুন</button>
-            <div style="font-size: 12px; margin-top:15px; color:#aaa; cursor:pointer; text-decoration: underline;" onclick="muteDevPopup()">১ ঘণ্টার জন্য বন্ধ করুন</div>
-        </div>
+    <div id="spaceTransition" class="space-modal">
+        <div class="planet"></div>
+        <p id="animText" style="margin-top:25px; font-weight: 600;">TRAVELING...</p>
     </div>
 
     <div id="homeScreen" class="screen active-screen">
-        <div class="dev-info-btn" onclick="openDevModal()">
-            <i class="fas fa-user-shield"></i> Developer info
+        <div class="user-header">
+            <img id="userPic" src="https://cdn-icons-png.flaticon.com/512/149/149071.png">
+            <div class="user-info">
+                <h4 id="userName">Telegram User</h4>
+                <p>ID: <span id="userId">00000000</span></p>
+            </div>
         </div>
         
         <div class="balance-card">
-            <div><small style="opacity:0.9">ব্যালেন্স</small><div class="bal-val" id="mainBal">৳ 0.00</div></div>
-            <div style="text-align:right"><small style="opacity:0.9">উইথড্র</small><div class="bal-val">৳ 0.00</div></div>
+            <div><small>ব্যালেন্স</small><div class="bal-val">৳ 0.00</div></div>
+            <div style="text-align:right"><small>উইথড্র</small><div class="bal-val">৳ 0.00</div></div>
         </div>
-
-        <a href="https://t.me/earning_hub_bdt" class="btn btn-green" style="display:block; text-decoration:none; text-align:center; margin-top:15px;"><i class="fab fa-telegram"></i> Join Telegram Channel</a>
 
         <div class="coin-grid" id="marketGrid"></div>
 
-        <button class="btn btn-blue" onclick="showScreenWithSpace('sellScreen', 'TRAVELING TO SELL PLANET...')">SELL COIN NOW</button>
-        <button class="btn btn-blue" style="background:#fff; color:var(--blue); border:2px solid var(--blue);" onclick="showScreenWithSpace('withdrawScreen', 'TRAVELING TO CASH PLANET...')">WITHDRAW NOW</button>
-        <button class="btn" style="background:#eee; color:#666;" onclick="alert('History coming soon!')">Transaction History</button>
+        <button class="btn btn-blue" onclick="showScreenWithSpace('sellScreen', 'GOING TO SELL PLANET...')">SELL COIN NOW</button>
+        <button class="btn btn-blue" style="background:#fff; color:var(--blue); border:2px solid var(--blue);" onclick="showScreenWithSpace('withdrawScreen', 'GOING TO CASH PLANET...')">WITHDRAW NOW</button>
     </div>
 
     <div id="sellScreen" class="screen">
         <div class="card">
-            <h3 style="text-align:center;">Sell Coins</h3>
+            <h3>Sell Coins</h3>
             <label>Select Coin</label>
             <select id="coinSelect" onchange="updateSellUI()">
-                <option value="5.60" data-name="NIVA COIN">NIVA COIN</option>
-                <option value="5.60" data-name="TOP COIN">TOP COIN</option>
-                <option value="14.00" data-name="NS COIN">NS COIN</option>
+                <option value="5.60">NIVA COIN</option>
+                <option value="5.60">TOP COIN</option>
+                <option value="14.00">NS COIN</option>
             </select>
             
-            <div id="transferInfo" style="background:#f0f7ff; padding:25px; border-radius:22px; margin:15px 0; border:2px dashed var(--blue); text-align: center;">
+            <div style="background:#f0f7ff; padding:20px; border-radius:20px; text-align: center; border:2px dashed var(--blue);">
                 <small>Send Coin to:</small><br>
-                <b id="targetUser" style="font-size:24px; color:var(--blue); display: block; margin: 10px 0;">niva_coin_eh</b> 
-                <span class="copy-btn" onclick="copyUser()">COPY USERNAME</span>
+                <b id="targetUser" style="font-size:22px; color:var(--blue);">niva_coin_eh</b> 
             </div>
 
             <label>Amount</label>
             <input type="number" id="sellQty" placeholder="কত কয়েন সেল করবেন? (Min 10,000)">
-            <label>Telegram Username</label>
-            <input type="text" id="sellUser" placeholder="আপনার ইউজারনেম দিন">
+            
+            <div id="instaField">
+                <label>Instagram Username</label>
+                <input type="text" id="sellUser" placeholder="যে আইডি থেকে কয়েন পাঠিয়েছেন">
+            </div>
             
             <button class="btn btn-blue" onclick="showSellPreview()">পরবর্তী ধাপে যান</button>
-            <button class="btn" style="background:#eee;" onclick="showScreenWithSpace('homeScreen', 'RETURNING HOME...')">Back</button>
-        </div>
-    </div>
-
-    <div id="sellPreviewScreen" class="screen">
-        <div class="card">
-            <h3>Confirm Details</h3>
-            <div id="sellSummary" style="line-height:2.5; font-size: 16px; background: #f9f9f9; padding: 20px; border-radius: 15px;"></div>
-            <button class="btn btn-green" onclick="confirmSellAction()">Confirm Sell</button>
-            <button class="btn" style="background:#eee;" onclick="showScreenWithSpace('sellScreen', 'EDITING INFO...')">Edit Info</button>
+            <button class="btn" style="background:#eee;" onclick="showScreenWithSpace('homeScreen')">Back</button>
         </div>
     </div>
 
     <div id="withdrawScreen" class="screen">
         <div class="card">
-            <div style="background: #e3f2fd; padding: 20px; border-radius: 15px; margin-bottom: 20px; text-align: center; font-weight: 800; border: 1px solid var(--blue);">আপনার ব্যালেন্স: <span id="wCheckBal" style="color:var(--blue);">৳ 0.00</span></div>
+            <div style="text-align:center; padding:15px; background:#e3f2fd; border-radius:15px; font-weight:800;">ব্যালেন্স: ৳ 0.00</div>
             <label>উইথড্র মেথড</label>
-            <select id="wMethod" onchange="updateWithdrawUI()">
-                <option value="bkash">Bkash Personal (Charge 3%)</option>
-                <option value="rocket">Rocket Personal (Charge 1.5%)</option>
-            </select>
-            <p id="wLimitText" style="font-size:12px; color:var(--red); font-weight: bold; margin-left:10px;"></p>
-            <label>পরিমান (৳)</label>
-            <input type="number" id="wAmount" placeholder="টাকার পরিমান" oninput="calcW()">
-            <label>নাম্বার</label>
-            <input type="text" id="wNumber" placeholder="বিকাশ/রকেট নাম্বার">
-            <div style="background:#e8f5e9; padding:20px; border-radius:20px; margin-top:10px; text-align: center;">
-                <small>আপনি পাবেন:</small><br>
-                <b id="wFinalAmt" style="font-size:28px; color:var(--green);">৳ 0.00</b>
-            </div>
-            <button class="btn btn-blue" onclick="finalWithdraw()">Confirm Withdraw</button>
-            <button class="btn" style="background:#eee;" onclick="showScreenWithSpace('homeScreen', 'RETURNING HOME...')">Back</button>
+            <select id="wMethod"><option value="bkash">Bkash Personal</option></select>
+            <input type="number" id="wAmount" placeholder="টাকার পরিমান">
+            <input type="text" id="wNumber" placeholder="নাম্বার দিন">
+            <button class="btn btn-blue" onclick="alert('Insufficient Balance')">Confirm Withdraw</button>
+            <button class="btn" style="background:#eee;" onclick="showScreenWithSpace('homeScreen')">Back</button>
         </div>
     </div>
 
     <script>
         let tg = window.Telegram.WebApp;
         tg.expand();
-        let userBalance = 0.00; // ব্যালেন্স এখন ০০
 
+        // ইউজার তথ্য সেট করা
         window.onload = () => {
+            if(tg.initDataUnsafe && tg.initDataUnsafe.user) {
+                const user = tg.initDataUnsafe.user;
+                document.getElementById('userName').innerText = user.first_name + (user.last_name ? " " + user.last_name : "");
+                document.getElementById('userId').innerText = user.id;
+                if(user.photo_url) document.getElementById('userPic').src = user.photo_url;
+            }
             renderMarket();
-            document.getElementById('mainBal').innerText = "৳ " + userBalance.toFixed(2);
-            document.getElementById('wCheckBal').innerText = "৳ " + userBalance.toFixed(2);
-            setTimeout(() => {
-                const isMuted = localStorage.getItem('devMuteTime');
-                if(!isMuted || Date.now() - isMuted > 3600000) {
-                    openDevModal();
-                }
-            }, 3000); 
+            
+            // সাবস্ক্রাইব পপআপ লজিক
+            const muteTime = localStorage.getItem('subMute');
+            if(!muteTime || Date.now() > muteTime) {
+                document.getElementById('subModal').style.display = 'flex';
+            }
         };
 
-        function openDevModal() { document.getElementById('devModal').style.display = 'flex'; }
-        function closeDevPopup() { document.getElementById('devModal').style.display = 'none'; }
-        function muteDevPopup() { localStorage.setItem('devMuteTime', Date.now()); closeDevPopup(); }
+        function closeSub() { document.getElementById('subModal').style.display = 'none'; }
+        function muteSub() { 
+            localStorage.setItem('subMute', Date.now() + 15 * 60 * 1000); 
+            closeSub(); 
+        }
 
         function showScreenWithSpace(screenId, text = "TRAVELING...") {
             const space = document.getElementById('spaceTransition');
-            const animText = document.getElementById('animText');
-            animText.innerText = text;
+            document.getElementById('animText').innerText = text;
             space.style.display = 'flex';
             setTimeout(() => {
                 space.style.display = 'none';
                 document.querySelectorAll('.screen').forEach(s => s.classList.remove('active-screen'));
                 document.getElementById(screenId).classList.add('active-screen');
-            }, 2000); // পপ আপ টাইম ২ সেকেন্ড
-        }
-
-        function copyUser() {
-            const user = document.getElementById('targetUser').innerText;
-            navigator.clipboard.writeText(user);
-            alert("Username Copied!");
+            }, 2000);
         }
 
         function updateSellUI() {
             const coin = document.getElementById('coinSelect');
             const target = document.getElementById('targetUser');
-            if(coin.value == "14.00") target.innerText = "ns_coin_eh";
-            else if(coin.options[coin.selectedIndex].text == "TOP COIN") target.innerText = "VOUCHER_MODE";
-            else target.innerText = "niva_coin_eh";
+            const instaField = document.getElementById('instaField');
+            
+            if(coin.options[coin.selectedIndex].text === "TOP COIN") {
+                target.innerText = "VOUCHER_MODE";
+                instaField.style.display = "none";
+            } else {
+                instaField.style.display = "block";
+                target.innerText = (coin.value === "14.00") ? "ns_coin_eh" : "niva_coin_eh";
+            }
         }
 
         function showSellPreview() {
             const qty = document.getElementById('sellQty').value;
             if(qty < 10000) return alert("মিনিমাম ১০,০০০ কয়েন লাগবে!");
-            const rate = document.getElementById('coinSelect').value;
-            const total = (qty / 1000) * rate;
-            document.getElementById('sellSummary').innerHTML = `
-                <b>কয়েন:</b> ${document.getElementById('coinSelect').options[document.getElementById('coinSelect').selectedIndex].text}<br>
-                <b>পরিমান:</b> ${qty}<br>
-                <b>রেট:</b> ৳${rate} (প্রতি ১০০০)<br>
-                <b style="color:var(--green)">মোট মূল্য: ৳${total.toFixed(2)}</b><br>
-                <b>ইউজারনেম:</b> ${document.getElementById('sellUser').value}
-            `;
-            showScreenWithSpace('sellPreviewScreen', 'PREPARING PREVIEW...');
-        }
-
-        function confirmSellAction() {
-            const space = document.getElementById('spaceTransition');
-            space.innerHTML = '<i class="fas fa-hand-holding-usd fa-4x" style="color:var(--gold)"></i><h3 style="color:white; margin-top:20px;">কয়েন দিয়ে টাকা নিচ্ছি...</h3>';
-            space.style.display = 'flex';
-            setTimeout(() => {
-                space.style.display = 'none';
-                alert("আমরা আপনার রিকোয়েস্ট পেয়েছি একটু অপেক্ষা করুন।");
-                location.reload(); // ব্যালেন্স জিরো রাখতে রিলোড
-            }, 2000); // ২ সেকেন্ড
-        }
-
-        function updateWithdrawUI() {
-            const m = document.getElementById('wMethod').value;
-            document.getElementById('wLimitText').innerText = m == 'bkash' ? "Min: 50৳ | Charge: 3%" : "Min: 100৳ | Charge: 1.5%";
-            calcW();
-        }
-
-        function calcW() {
-            const amt = document.getElementById('wAmount').value;
-            const fee = document.getElementById('wMethod').value == 'bkash' ? 0.03 : 0.015;
-            const final = amt - (amt * fee);
-            document.getElementById('wFinalAmt').innerText = "৳ " + (final > 0 ? final.toFixed(2) : "0.00");
-        }
-
-        function finalWithdraw() {
-            const amt = parseFloat(document.getElementById('wAmount').value);
-            const m = document.getElementById('wMethod').value;
-            const min = m == 'bkash' ? 50 : 100;
-            
-            if(amt > userBalance) return alert("পর্যাপ্ত ব্যালেন্স নেই!");
-            if(amt < min) return alert("মিনিমাম উইথড্র লিমিট মানুন!");
-
-            const space = document.getElementById('spaceTransition');
-            space.innerHTML = '<i class="fas fa-paper-plane fa-4x" style="color:white"></i><h3 style="color:white; margin-top:20px;">টাকা ট্রান্সফার হচ্ছে...</h3>';
-            space.style.display = 'flex';
-            setTimeout(() => {
-                space.style.display = 'none';
-                alert("উইথড্র রিকোয়েস্ট সফল হয়েছে!");
-                showScreenWithSpace('homeScreen', 'DONE!');
-            }, 2000); // ২ সেকেন্ড
+            alert("রিকোয়েস্ট সফল হয়েছে! প্রতিনিধি চেক করে ব্যালেন্স দিয়ে দিবে।");
+            showScreenWithSpace('homeScreen');
         }
 
         function renderMarket() {
@@ -272,7 +190,6 @@
                 h += `<div class="coin-box"><b>${c.n}</b><div class="coin-price">${c.p}৳</div><small style="color:${c.s=='Active'?'green':'red'}; font-weight:bold;">${c.s}</small></div>`;
             });
             document.getElementById('marketGrid').innerHTML = h;
-            updateWithdrawUI();
         }
     </script>
 </body>
