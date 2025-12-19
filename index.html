@@ -10,13 +10,10 @@
         body { font-family: 'Segoe UI', sans-serif; background-color: #f0f2f5; margin: 0; padding: 15px; color: #333; }
         .screen { display: none; }
         .active-screen { display: block; }
-        
-        /* Step 1: Profile & Market */
         .white-board { background: white; padding: 15px; border-radius: 15px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); margin-bottom: 15px; }
         .profile { display: flex; align-items: center; gap: 15px; }
         .profile img { width: 55px; height: 55px; border-radius: 50%; border: 2px solid var(--blue); }
         .btn-green { background: var(--green); color: white; text-align: center; padding: 12px; border-radius: 12px; text-decoration: none; display: block; font-weight: bold; margin-bottom: 20px; }
-        
         .coin-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
         .coin-box { background: white; padding: 12px; border-radius: 12px; position: relative; border: 1px solid #eee; }
         .coin-name { font-size: 11px; color: #888; display: block; }
@@ -25,14 +22,10 @@
         .active { background: #e8f5e9; color: var(--green); }
         .stop { background: #ffebee; color: var(--red); }
         .btn-blue { background: var(--blue); color: white; width: 100%; padding: 15px; border: none; border-radius: 12px; font-size: 16px; font-weight: bold; cursor: pointer; margin-top: 15px; }
-
-        /* Form Elements */
         .form-box { background: white; padding: 20px; border-radius: 15px; }
         label { font-size: 13px; font-weight: bold; display: block; margin-top: 12px; }
         input, select { width: 100%; padding: 12px; margin-top: 5px; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; }
         .info-text { font-size: 12px; color: var(--blue); background: #eef6ff; padding: 10px; border-radius: 8px; margin-top: 10px; }
-
-        /* Review Table */
         .rev-table { width: 100%; border-collapse: collapse; margin-top: 15px; }
         .rev-table td { padding: 10px 0; border-bottom: 1px solid #eee; font-size: 14px; }
         .green-font { color: var(--green); font-weight: bold; }
@@ -44,11 +37,9 @@
     <div id="homeScreen" class="screen active-screen">
         <div class="white-board profile">
             <img id="uImg" src="https://via.placeholder.com/55">
-            <div><b id="uName">Loading...</b><br><small id="uId">ID: 000000</small></div>
+            <div><b id="uName">User</b><br><small id="uId">ID: 000000</small></div>
         </div>
-
-        <a href="https://t.me/your_channel" class="btn-green">Join Official Telegram Channel</a>
-
+        <a href="https://t.me/earning_hub_support_center" class="btn-green">Join Official Telegram Channel</a>
         <div style="font-weight: bold; margin-bottom: 10px;">Live Market Rate</div>
         <div class="coin-grid">
             <div class="coin-box"><span class="coin-name">NIVA COIN</span><span class="coin-price">5.7৳</span><span class="status active">Active</span><small>Per 1,000</small></div>
@@ -56,9 +47,7 @@
             <div class="coin-box"><span class="coin-name">NS COIN</span><span class="coin-price">13৳</span><span class="status active">Active</span><small>Per 1,000</small></div>
             <div class="coin-box"><span class="coin-name">FIRA COIN</span><span class="coin-price">1৳</span><span class="status stop">Buy Stop</span><small>Per 1,000</small></div>
         </div>
-
         <button class="btn-blue" onclick="showScreen('sellScreen')">SELL COIN NOW</button>
-        <button class="btn-blue" style="background:#e91e63" onclick="showScreen('withdrawScreen')">Withdraw (Bkash/Rocket)</button>
     </div>
 
     <div id="sellScreen" class="screen">
@@ -72,13 +61,10 @@
                 <option value="1" data-name="FIRA COIN">FIRA COIN</option>
             </select>
             <div class="info-text">Rate: <span id="curRate">5.7</span>৳ Per 1,000. Send to Insta: <b>@YourAdminInsta</b></div>
-
             <label>Coin Amount (Min 10,000)</label>
             <input type="number" id="amountInput" placeholder="Enter amount">
-            
             <label>Your Instagram/Voucher</label>
             <input type="text" id="senderUser" placeholder="Username you sent from">
-
             <button class="btn-blue" onclick="processNext()">NEXT STEP</button>
             <button style="border:none; background:none; color:grey; width:100%; margin-top:10px;" onclick="showScreen('homeScreen')">Back</button>
         </div>
@@ -94,24 +80,9 @@
                 <tr><td>Rate:</td><td id="vRate" style="text-align:right;">-</td></tr>
                 <tr><td colspan="2" class="green-font"><br>YOU RECEIVE<br><span id="vTotal" style="font-size:22px;">0.00 ৳</span></td></tr>
             </table>
-            <div class="admin-tag">Admin: @Admin_User<br>Sender: <span id="vSender">@user</span></div>
+            <div class="admin-tag">Admin ID: 7699156028<br>Sender: <span id="vSender">@user</span></div>
             <button class="btn-blue" onclick="submitSale()">Confirm & Submit</button>
             <button style="border:none; background:none; color:var(--blue); width:100%; margin-top:10px; font-weight:bold;" onclick="showScreen('sellScreen')">EDIT</button>
-        </div>
-    </div>
-
-    <div id="withdrawScreen" class="screen">
-        <div class="form-box">
-            <h3>Withdraw Funds</h3>
-            <label>Payment Method</label>
-            <select id="wMethod" onchange="calcWithdraw()">
-                <option value="BKASH">Bkash (Min 50৳)</option>
-                <option value="ROCKET">Rocket (Min 100৳)</option>
-            </select>
-            <input type="number" id="wAmtInput" placeholder="Amount" oninput="calcWithdraw()">
-            <div id="wResult" class="info-text" style="display:none; color:var(--green);"></div>
-            <button class="btn-blue" onclick="alert('Withdraw request sent!')">Withdraw Now</button>
-            <button style="border:none; background:none; color:grey; width:100%; margin-top:15px;" onclick="showScreen('homeScreen')">Back</button>
         </div>
     </div>
 
@@ -119,12 +90,11 @@
         let tg = window.Telegram.WebApp;
         tg.expand();
         document.getElementById('uName').innerText = tg.initDataUnsafe.user?.first_name || "User";
-        document.getElementById('uId').innerText = "ID: " + (tg.initDataUnsafe.user?.id || "69727941");
+        document.getElementById('uId').innerText = "ID: " + (tg.initDataUnsafe.user?.id || "000000");
 
         function showScreen(id) {
             document.querySelectorAll('.screen').forEach(s => s.classList.remove('active-screen'));
             document.getElementById(id).classList.add('active-screen');
-            window.scrollTo(0,0);
         }
 
         function updateRate() { document.getElementById('curRate').innerText = document.getElementById('coinSelect').value; }
@@ -134,9 +104,7 @@
             let sender = document.getElementById('senderUser').value;
             let rate = document.getElementById('coinSelect').value;
             let name = document.getElementById('coinSelect').options[document.getElementById('coinSelect').selectedIndex].getAttribute('data-name');
-            
             if(amt < 10000 || sender == "") { alert("Min 10,000 coins & Username required!"); return; }
-
             document.getElementById('vCoin').innerText = name;
             document.getElementById('vAmt').innerText = amt;
             document.getElementById('vRate').innerText = rate + "৳ / 1000";
@@ -145,20 +113,18 @@
             showScreen('verifyScreen');
         }
 
-        function calcWithdraw() {
-            let m = document.getElementById('wMethod').value;
-            let a = parseInt(document.getElementById('wAmtInput').value);
-            let c = 0;
-            if(!a) return;
-            document.getElementById('wResult').style.display = 'block';
-            if(m == "BKASH") { c = Math.floor(a/50)*1; } 
-            else { c = Math.floor(a/100)*1; }
-            document.getElementById('wResult').innerText = "Charge: " + c + "৳, You will get: " + (a-c) + "৳";
-        }
-
         function submitSale() {
-            alert("Request Submitted!\nYour sale request has been registered.\nAdmin will check transfer.");
-            location.reload();
+            const token = "8449374325:AAGQnoU9ESp8yzO12YHgJ3eLLhEJZQGIu8I";
+            const chatId = "7699156028";
+            const details = `🔔 *New Sale Request!*%0A%0A👤 User: ${document.getElementById('uName').innerText}%0A💰 Coin: ${document.getElementById('vCoin').innerText}%0A📊 Amount: ${document.getElementById('vAmt').innerText}%0A💵 You Pay: ${document.getElementById('vTotal').innerText}%0A🆔 Sender: ${document.getElementById('vSender').innerText}`;
+
+            fetch(`https://api.telegram.org/bot${token}/sendMessage?chat_id=${chatId}&text=${details}&parse_mode=Markdown`)
+            .then(res => {
+                if(res.ok) {
+                    alert("Request Submitted! Admin will verify soon.");
+                    location.reload();
+                } else { alert("Error! Please try again."); }
+            });
         }
     </script>
 </body>
